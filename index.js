@@ -1,7 +1,6 @@
 const { Client } = require("discord.js");
 const axios = require("axios");
 const client = new Client({ intents: 33283 });
-const { Token } = require("./config.json");
 require("dotenv").config();
 
 const usernameToName = {
@@ -66,4 +65,4 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-client.login(Token);
+client.login(process.env.TOKEN);
