@@ -1,4 +1,4 @@
-const { Client } = require("discord.js");
+const { Client, EmbedBuilder } = require("discord.js");
 
 const { simulateTraffic } = require("./app-waker");
 const { usernameToName } = require("./authors");
@@ -14,6 +14,7 @@ require("dotenv").config();
 const prefixes = {
   CHAT: "!chat",
   CLEAR: "!clear",
+  SAY: "!say",
 };
 
 client.once("ready", () => {
@@ -36,14 +37,34 @@ client.on("messageCreate", async (message) => {
   }
   if (message.content.startsWith(prefixes.CLEAR)) {
     const content = message.content.slice(prefixes.CLEAR.length).trim();
-    const val = await clearValidation(+content)
+    const val = await clearValidation(+content);
     const valMessage = await validationMessage(val);
-    if (valMessage != true) return await message.channel.send(valMessage);await message.channel.bulkDelete(content);
+    if (valMessage != true) return await message.channel.send(valMessage);
+    await message.channel.bulkDelete(content);
     message.channel.send(`Limpei ${content} mensagens!`).then((msg) => {
       setTimeout(() => {
         msg.delete();
       }, 3000);
     });
+  }
+  if (message.content.startsWith(prefixes.SAY)) {
+    const content = message.content.slice(prefixes.SAY.length).trim();
+    if (!content) {
+      const invalidPrompt = message.channel
+        .send("Você precisa informar alguma mensagem.")
+        .then((msg) => {
+          setTimeout(() => {
+            msg.delete();
+            message.delete();
+          }, 3000);
+        });
+      return invalidPrompt;
+    }
+    message.delete();
+    const embed = new EmbedBuilder()
+      .setColor("#0367EF")
+      .setDescription(content);
+    message.channel.send({ embeds: [embed] });
   }
 });
 
