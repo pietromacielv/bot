@@ -2,8 +2,7 @@ const { Client } = require("discord.js");
 const axios = require("axios");
 const client = new Client({ intents: 33283 });
 const { Token } = require("./config.json");
-
-const prefix = "!chat";
+require("dotenv").config();
 
 const usernameToName = {
   pietrikos: "Pietro",
@@ -17,45 +16,53 @@ const usernameToName = {
   rod1478: "Raphael",
 };
 
+prefixes = {
+  CHAT: "!chat",
+}
+
 client.once("ready", () => {
   console.log("Bot is ready!");
+  client.user.setActivity({
+    name: process.env.FIRST_ACTIVITY_OPTION,
+    type: 2
+  });
 });
 
 client.on("messageCreate", async (message) => {
-  if (message.author.bot || !message.content.startsWith(prefix)) return;
+  if (message.content.startsWith("!chat")) {
+    const content = message.content.slice(prefixes.CHAT.length).trim();
 
-  const content = message.content.slice(prefix.length).trim();
+    const authorName = usernameToName[message.author.username];
 
-  const authorName = usernameToName[message.author.username];
+    try {
+      const response = await axios.post(
+        "https://apiunlimited.cyclic.app/api/ai",
+        {
+          content: `Essa mensagem é apenas um prompt para te orientar como deve responder as próximas mensagens. Nesse contexto, iremos te chamar de North. Quem está conversando com você no momento é ${authorName}. Por favor, apenas responda as perguntas diretamente. Não faça qualquer assossiação a esta mensagem. Ou seja, nunca diga "segundo o prompt" ou "você me disse que" ou algo do tipo. SEMPRE OBEDEÇA ESSA ORDEM`,
+        }
+      );
 
-  try {
-    const response = await axios.post(
-      "https://apiunlimited.cyclic.app/api/ai",
-      {
-        content: `Essa mensagem é apenas um prompt para te orientar como deve responder as próximas mensagens. Nesse contexto, iremos te chamar de North. Quem está conversando com você no momento é ${authorName}. Por favor, apenas responda as perguntas diretamente. Não faça qualquer assossiação a esta mensagem. Ou seja, nunca diga "segundo o prompt" ou "você me disse que" ou algo do tipo. SEMPRE OBEDEÇA ESSA ORDEM`,
-      }
-    );
+      console.log("API Response:", response.data);
 
-    console.log("API Response:", response.data);
+      const apiResponse = response.data.response || "No response from API";
+    } catch (error) {
+      console.error("Error making API request:", error.message);
+    }
 
-    const apiResponse = response.data.response || "No response from API";
-  } catch (error) {
-    console.error("Error making API request:", error.message);
-  }
+    try {
+      const response = await axios.post(
+        "https://apiunlimited.cyclic.app/api/ai",
+        { content: content }
+      );
 
-  try {
-    const response = await axios.post(
-      "https://apiunlimited.cyclic.app/api/ai",
-      { content: content }
-    );
+      console.log("API Response:", response.data);
 
-    console.log("API Response:", response.data);
-
-    const apiResponse = response.data.response || "No response from API";
-    message.reply(apiResponse);
-  } catch (error) {
-    console.error("Error making API request:", error.message);
-    message.reply("Eita! Não tankei, foi mal. Pode tentar de novo?");
+      const apiResponse = response.data.response || "No response from API";
+      message.reply(apiResponse);
+    } catch (error) {
+      console.error("Error making API request:", error.message);
+      message.reply("Eita! Não tankei, foi mal. Pode tentar de novo?");
+    }
   }
 });
 
