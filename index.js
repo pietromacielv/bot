@@ -20,7 +20,7 @@ prefixes = {
 }
 
 client.once("ready", () => {
-  console.log("Bot is ready");
+  console.log("Bot is ready!");
   client.user.setActivity({
     name: process.env.FIRST_ACTIVITY_OPTION,
     type: 2
