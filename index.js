@@ -1,5 +1,6 @@
 const { Client } = require("discord.js");
 const axios = require("axios");
+const { simulateTraffic } = require("./app-waker");
 const client = new Client({ intents: 33283 });
 require("dotenv").config();
 
@@ -17,14 +18,15 @@ const usernameToName = {
 
 prefixes = {
   CHAT: "!chat",
-}
+};
 
 client.once("ready", () => {
   console.log("Bot is ready!");
+  simulateTraffic();
   client.user.setActivity({
     name: `${process.env.FIRST_ACTIVITY_OPTION}`,
-    type: 2
-  })
+    type: 2,
+  });
 });
 
 client.on("messageCreate", async (message) => {
