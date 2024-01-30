@@ -1,8 +1,0 @@
-client.once("ready", () => {
-  console.log("O bot está ligado");
-  client.user.setActivity({
-    name: "o How chorar na Zona Fantasma", 
-    state: "(e eu não aguento mais)",
-    type: 2,
-  });
-});
