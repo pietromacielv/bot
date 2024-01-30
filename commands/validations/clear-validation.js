@@ -1,6 +1,7 @@
 const clearValidation = async (amount) => {
-  if (amount === 0 || typeof +amount !== "number") return undefined;
+  if (amount === 0 || typeof amount !== "number") return undefined;
   if (amount >= 100) return false;
+  return true
 };
 
 const validationMessage = async (clearType) => {

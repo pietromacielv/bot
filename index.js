@@ -36,9 +36,9 @@ client.on("messageCreate", async (message) => {
   }
   if (message.content.startsWith(prefixes.CLEAR)) {
     const content = message.content.slice(prefixes.CLEAR.length).trim();
-    const validation = await validationMessage(await clearValidation(content));
-    if (validation != true) return await message.channel.send(validation);
-    await message.channel.bulkDelete(content);
+    const val = await clearValidation(+content)
+    const valMessage = await validationMessage(val);
+    if (valMessage != true) return await message.channel.send(valMessage);await message.channel.bulkDelete(content);
     message.channel.send(`Limpei ${content} mensagens!`).then((msg) => {
       setTimeout(() => {
         msg.delete();
