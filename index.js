@@ -1,5 +1,4 @@
 const { Client, EmbedBuilder } = require("discord.js");
-
 const { simulateTraffic } = require("./app-waker");
 const { usernameToName } = require("./authors");
 const { chat } = require("./commands/logics/chat");
@@ -8,8 +7,9 @@ const {
   clearValidation,
 } = require("./commands/validations/clear-validation");
 
-const client = new Client({ intents: 33283 });
 require("dotenv").config();
+
+const client = new Client({ intents: 33283 });
 
 const prefixes = {
   CHAT: "!chat",
@@ -20,50 +20,52 @@ const prefixes = {
 client.once("ready", () => {
   console.log("Bot is ready!");
   simulateTraffic();
-  client.user.setActivity({
-    name: `${process.env.FIRST_ACTIVITY_OPTION}`,
-    type: 2,
-  });
+  client.user.setActivity({ name: process.env.FIRST_ACTIVITY_OPTION, type: 2 });
 });
 
 client.on("messageCreate", async (message) => {
-  if (message.content.startsWith(prefixes.CHAT)) {
-    const content = message.content.slice(prefixes.CHAT.length).trim();
+  const content = message.content.trim();
+
+  if (content.startsWith(prefixes.CHAT)) {
     const authorName = usernameToName[message.author.username];
-
-    const northResponse = await chat(content, authorName);
-
+    const northResponse = await chat(
+      content.slice(prefixes.CHAT.length),
+      authorName
+    );
     message.reply(northResponse);
   }
-  if (message.content.startsWith(prefixes.CLEAR)) {
-    const content = message.content.slice(prefixes.CLEAR.length).trim();
-    const val = await clearValidation(+content);
+
+  if (content.startsWith(prefixes.CLEAR)) {
+    const val = await clearValidation(+content.slice(prefixes.CLEAR.length));
     const valMessage = await validationMessage(val);
-    if (valMessage != true) return await message.channel.send(valMessage);
-    await message.channel.bulkDelete(content);
-    message.channel.send(`Limpei ${content} mensagens!`).then((msg) => {
-      setTimeout(() => {
-        msg.delete();
-      }, 3000);
-    });
+
+    if (valMessage !== true) return message.channel.send(valMessage);
+
+    await message.channel.bulkDelete(+content.slice(prefixes.CLEAR.length));
+    const deleteMsg = await message.channel.send(
+      `Limpei ${content} mensagens!`
+    );
+    setTimeout(() => deleteMsg.delete(), 3000);
   }
-  if (message.content.startsWith(prefixes.SAY)) {
-    const content = message.content.slice(prefixes.SAY.length).trim();
-    if (!content) {
-      const invalidPrompt = message.channel
-        .send("Você precisa informar alguma mensagem.")
-        .then((msg) => {
-          setTimeout(() => {
-            msg.delete();
-            message.delete();
-          }, 3000);
-        });
-      return invalidPrompt;
+
+  if (content.startsWith(prefixes.SAY)) {
+    const sayContent = content.slice(prefixes.SAY.length).trim();
+
+    if (!sayContent) {
+      const invalidPrompt = await message.channel.send(
+        "Você precisa informar alguma mensagem."
+      );
+      setTimeout(() => {
+        invalidPrompt.delete();
+        message.delete();
+      }, 3000);
+      return;
     }
+
     message.delete();
     const embed = new EmbedBuilder()
       .setColor("#0367EF")
-      .setDescription(content);
+      .setDescription(sayContent);
     message.channel.send({ embeds: [embed] });
   }
 });
