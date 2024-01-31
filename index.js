@@ -52,19 +52,19 @@ client.on("messageCreate", async (message) => {
   if (content.startsWith(generalPrefixes.CHAT)) {
     const authorName = usernameToName[message.author.username];
     const northResponse = await chat(
-      content.slice(prefixes.CHAT.length),
+      content.slice(generalPrefixes.CHAT.length),
       authorName
     );
     message.reply(northResponse);
   }
 
   if (content.startsWith(generalPrefixes.CLEAR)) {
-    const val = await clearValidation(+content.slice(prefixes.CLEAR.length));
+    const val = await clearValidation(+content.slice(generalPrefixes.CLEAR.length));
     const valMessage = await validationMessage(val);
 
     if (valMessage !== true) return message.channel.send(valMessage);
 
-    await message.channel.bulkDelete(+content.slice(prefixes.CLEAR.length));
+    await message.channel.bulkDelete(+content.slice(generalPrefixes.CLEAR.length));
     const deleteMsg = await message.channel.send(
       `Limpei ${content} mensagens!`
     );
@@ -72,7 +72,7 @@ client.on("messageCreate", async (message) => {
   }
 
   if (content.startsWith(generalPrefixes.SAY)) {
-    const sayContent = content.slice(prefixes.SAY.length).trim();
+    const sayContent = content.slice(generalPrefixes.SAY.length).trim();
 
     if (!sayContent) {
       const invalidPrompt = await message.channel.send(
