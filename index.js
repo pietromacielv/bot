@@ -55,16 +55,23 @@ client.on("messageCreate", async (message) => {
       content.slice(generalPrefixes.CHAT.length),
       authorName
     );
-    message.reply(northResponse);
+    const embed = new EmbedBuilder()
+      .setColor("#0367EF")
+      .setDescription(northResponse);
+    message.reply({ embeds: [embed] });
   }
 
   if (content.startsWith(generalPrefixes.CLEAR)) {
-    const val = await clearValidation(+content.slice(generalPrefixes.CLEAR.length));
+    const val = await clearValidation(
+      +content.slice(generalPrefixes.CLEAR.length)
+    );
     const valMessage = await validationMessage(val);
 
     if (valMessage !== true) return message.channel.send(valMessage);
 
-    await message.channel.bulkDelete(+content.slice(generalPrefixes.CLEAR.length));
+    await message.channel.bulkDelete(
+      +content.slice(generalPrefixes.CLEAR.length)
+    );
     const deleteMsg = await message.channel.send(
       `Limpei ${content} mensagens!`
     );
