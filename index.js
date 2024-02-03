@@ -73,7 +73,7 @@ client.on("messageCreate", async (message) => {
       +content.slice(generalPrefixes.CLEAR.length)
     );
     const deleteMsg = await message.channel.send(
-      `Limpei ${content} mensagens!`
+      `Limpei ${val} mensagens!`
     );
     setTimeout(() => deleteMsg.delete(), 3000);
   }
