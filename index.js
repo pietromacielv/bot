@@ -62,18 +62,15 @@ client.on("messageCreate", async (message) => {
   }
 
   if (content.startsWith(generalPrefixes.CLEAR)) {
-    const val = await clearValidation(
-      +content.slice(generalPrefixes.CLEAR.length)
-    );
+    const messagesToClear = +content.slice(generalPrefixes.CLEAR.length);
+    const val = await clearValidation(messagesToClear);
     const valMessage = await validationMessage(val);
 
     if (valMessage !== true) return message.channel.send(valMessage);
 
-    await message.channel.bulkDelete(
-      +content.slice(generalPrefixes.CLEAR.length)
-    );
+    await message.channel.bulkDelete(messagesToClear);
     const deleteMsg = await message.channel.send(
-      `Limpei ${val} mensagens!`
+      `Limpei ${messagesToClear} mensagens!`
     );
     setTimeout(() => deleteMsg.delete(), 3000);
   }
