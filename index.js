@@ -65,6 +65,7 @@ client.on("messageCreate", async (message) => {
     const messagesToClear = +content.slice(generalPrefixes.CLEAR.length);
     const val = await clearValidation(messagesToClear);
     const valMessage = await validationMessage(val);
+    await message.delete();
 
     if (valMessage !== true) return message.channel.send(valMessage);
 
