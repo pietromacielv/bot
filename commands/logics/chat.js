@@ -6,7 +6,7 @@ async function chat(message, authorName) {
     const prompt = await axios.post("https://apiunlimited.cyclic.app/api/ai", {
       content: prePrompt + message,
     });
-    const apiResponse = prompt.data.text || "No response from API";
+    const apiResponse = prompt.data.text || "Não tankei, pode tentar de novo?";
     return apiResponse;
   } catch (error) {
     console.error("Error making API request:", error.message);
