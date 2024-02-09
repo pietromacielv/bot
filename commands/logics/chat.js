@@ -14,7 +14,7 @@ async function chat(message, authorName) {
       "https://apiunlimited.cyclic.app/api/ai",
       { content: message }
     );
-    const apiResponse = response.data.response || "No response from API";
+    const apiResponse = response.data.text || "No response from API";
     return apiResponse;
   } catch (error) {
     console.error("Error making API request:", error.message);
