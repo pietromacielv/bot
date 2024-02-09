@@ -1,17 +1,13 @@
 const axios = require("axios");
 
-async function chat(message, authorName) {
+async function chat(message, userName) {
   try {
-    await axios.post(
-      "https://apiunlimited.cyclic.app/api/ai",
-      {
-        content: `Olá! A partir de agora eu vou chamar você de North e nesse momento você está conversando com ${authorName}. Você deverá reagir / responder somente às próximas mensagens, certo?`,
-      }
-    );;
-    const prompt = await axios.post("https://apiunlimited.cyclic.app/api/ai", {
-      content: message,
+    const prePrompt = `Olá! De agora em diante chamarei você de North e agora você está falando com Pietro. Você só deverá reagir/responder à mensagem que virá a seguir: `;
+    const prompt = await axios.post("https://localhost:3000/api/ai", {
+      content: prePrompt + message,
     });
-    const apiResponse = prompt.data.text || "Não tankei, pode tentar de novo?";
+    const apiResponse =
+      prompt.data.text || "Response error - Malformed AI Response";
     return apiResponse;
   } catch (error) {
     console.error("Error making API request:", error.message);
