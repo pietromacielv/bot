@@ -58,7 +58,7 @@ client.on("messageCreate", async (message) => {
     const embed = new EmbedBuilder()
       .setColor("#0367EF")
       .setDescription(northResponse);
-    message.reply({ embeds: [embed] });
+    message.channel.send({ embeds: [embed] });
   }
 
   if (content.startsWith(generalPrefixes.CLEAR)) {
